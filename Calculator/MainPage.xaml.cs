@@ -1,20 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-
+using static Calculator.BlankPage1;
 //“空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 上有介绍
 
 namespace Calculator
@@ -28,6 +19,7 @@ namespace Calculator
         {
             this.InitializeComponent();
             mark.Push('#');
+            DataContext = new Record();
         }
 
         bool ifDot = false;
@@ -37,9 +29,7 @@ namespace Calculator
         Stack num = new Stack();
         char tempMark;
         double temp1, temp2, result;
-
         int length = 0;
-
 
         void myAdd(Num x)
         {
@@ -51,7 +41,7 @@ namespace Calculator
         void myAdd(char ch)
         {
 
-            if (temp.Count!=0&& Equals(temp[temp.Count - 1].GetType().ToString(), "System.Char") && expression.Text == "" && temp.Count != 0)
+            if (temp.Count != 0 && Equals(temp[temp.Count - 1].GetType().ToString(), "System.Char") && expression.Text == "0" && temp.Count != 0)
             {
                 temp[temp.Count - 1] = ch;
 
@@ -66,8 +56,28 @@ namespace Calculator
                 else
                     Input.Text += expression.Text + ch;
             }
-            expression.Text = "";
+            expression.Text = "0";
         }//运算符
+
+        public class Num
+        {
+            private int getNum;
+
+            public int GetNum
+            {
+                get
+                {
+                    return getNum;
+                }
+
+                set
+                {
+                    getNum = value;
+                }
+            }
+
+        }
+
         #region 增加数字
         private void one_Click(object sender, RoutedEventArgs e)
         {
@@ -131,6 +141,7 @@ namespace Calculator
         }
         #endregion
 
+
         private void dot_Click(object sender, RoutedEventArgs e)
         {
             if (ifDot == true)
@@ -180,92 +191,106 @@ namespace Calculator
             storage.Clear();
         }
 
+        private void record_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(BlankPage1));
+        }
+
         private void count_Click(object sender, RoutedEventArgs e)
         {
-            Input.Text += expression.Text;
-            temp.Add(Convert.ToDouble(expression.Text));
-            length = temp.Count;
-            #region 将数字和字符存入存储器storage,实现逆波兰式
-            for (int L = 0; L < length; L++)
+            if (expression.Text=="0"&&Input.Text=="")
             {
-                if (Equals(temp[L].GetType().ToString(), "System.Double"))
-                    storage.Add(temp[L]);
-                else if (mark.Count == 1)
-                    mark.Push(temp[L]);
-                else if (mark.Count > 1)
+            }
+            else
+            {
+
+                Input.Text += expression.Text;
+                temp.Add(Convert.ToDouble(expression.Text));
+                length = temp.Count;
+                #region 将数字和字符存入存储器storage,实现逆波兰式
+                for (int L = 0; L < length; L++)
                 {
-                    tempMark = Convert.ToChar(mark.Peek());
-                    if ((tempMark == '+' || tempMark == '-') && (Convert.ToChar(temp[L]) == '/' || Convert.ToChar(temp[L]) == '*'))
-                    {
+                    if (Equals(temp[L].GetType().ToString(), "System.Double"))
+                        storage.Add(temp[L]);
+                    else if (mark.Count == 1)
                         mark.Push(temp[L]);
-                    }
-                    else
+                    else if (mark.Count > 1)
                     {
-                        while (true)
+                        tempMark = Convert.ToChar(mark.Peek());
+                        if ((tempMark == '+' || tempMark == '-') && (Convert.ToChar(temp[L]) == '/' || Convert.ToChar(temp[L]) == '*'))
                         {
-
-                            if (Convert.ToChar(mark.Peek()) == '#' || ((tempMark == '+' || tempMark == '-') && (Convert.ToChar(temp[L]) == '/' || Convert.ToChar(temp[L]) == '*')))
+                            mark.Push(temp[L]);
+                        }
+                        else
+                        {
+                            while (true)
                             {
 
-                                mark.Push(temp[L]);
-                                break;
-                            }
-                            else
-                            {
-                                storage.Add(mark.Pop());
-                                tempMark = Convert.ToChar(mark.Peek());
+                                if (Convert.ToChar(mark.Peek()) == '#' || ((tempMark == '+' || tempMark == '-') && (Convert.ToChar(temp[L]) == '/' || Convert.ToChar(temp[L]) == '*')))
+                                {
 
+                                    mark.Push(temp[L]);
+                                    break;
+                                }
+                                else
+                                {
+                                    storage.Add(mark.Pop());
+                                    tempMark = Convert.ToChar(mark.Peek());
+
+                                }
                             }
                         }
                     }
                 }
-            }
-            int j = mark.Count;
-            for (int i = 0; i < j; i++)
-            {
-                storage.Add(Convert.ToChar(mark.Pop()));
-            }
-            #endregion
-            #region 计算逆波兰式
-            int n = 0;
-            while (!Equals(storage[n], '#'))
-            {
-
-                if (Equals(storage[n].GetType().ToString(), "System.Double"))
+                int j = mark.Count;
+                for (int i = 0; i < j; i++)
                 {
-                    num.Push(storage[n]);
+                    storage.Add(Convert.ToChar(mark.Pop()));
                 }
-                else if (Equals(storage[n].GetType().ToString(), "System.Char"))
+                #endregion
+                #region 计算逆波兰式
+                int n = 0;
+                while (!Equals(storage[n], '#'))
                 {
-                    temp2 = Convert.ToDouble(num.Pop());
-                    temp1 = Convert.ToDouble(num.Pop());
-                    switch (Convert.ToChar(storage[n]))
+
+                    if (Equals(storage[n].GetType().ToString(), "System.Double"))
                     {
-                        case '+':
-                            result = temp1 + temp2;
-                            num.Push(result);
-                            break;
-                        case '-':
-                            result = temp1 - temp2;
-                            num.Push(result);
-                            break;
-                        case '*':
-                            result = temp1 * temp2;
-                            num.Push(result);
-                            break;
-                        case '/':
-                            result = temp1 / temp2;
-                            num.Push(result);
-                            break;
-
+                        num.Push(storage[n]);
                     }
+                    else if (Equals(storage[n].GetType().ToString(), "System.Char"))
+                    {
+                        temp2 = Convert.ToDouble(num.Pop());
+                        temp1 = Convert.ToDouble(num.Pop());
+                        switch (Convert.ToChar(storage[n]))
+                        {
+                            case '+':
+                                result = temp1 + temp2;
+                                num.Push(result);
+                                break;
+                            case '-':
+                                result = temp1 - temp2;
+                                num.Push(result);
+                                break;
+                            case '*':
+                                result = temp1 * temp2;
+                                num.Push(result);
+                                break;
+                            case '/':
+                                result = temp1 / temp2;
+                                num.Push(result);
+                                break;
+
+                        }
+                    }
+
+                    n++;
+
                 }
+                #endregion
+                expression.Text = num.Pop().ToString();
 
-                n++;
-
+                Class1.moc.Add(new Record { record = Input.Text + "=" + expression.Text });
             }
-            #endregion
-            expression.Text = num.Pop().ToString();
         }
         private void del_Click(object sender, RoutedEventArgs e)
         {
@@ -279,22 +304,6 @@ namespace Calculator
             }
         }
     }
-    public class Num
-    {
-        private int getNum;
 
-        public int GetNum
-        {
-            get
-            {
-                return getNum;
-            }
 
-            set
-            {
-                getNum = value;
-            }
-        }
-
-    }
 }
