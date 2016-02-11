@@ -41,12 +41,12 @@ namespace Calculator
         int length = 0;
 
 
-        void myAdd(Button x)
+        void myAdd(Num x)
         {
             if (expression.Text == "0")
-                expression.Text = x.Content.ToString();
+                expression.Text = x.GetNum.ToString();
             else
-                expression.Text = expression.Text + x.Content.ToString();
+                expression.Text = expression.Text + x.GetNum.ToString();
         }//操作数
         void myAdd(char ch)
         {
@@ -71,42 +71,62 @@ namespace Calculator
         #region 增加数字
         private void one_Click(object sender, RoutedEventArgs e)
         {
+            Num one = new Num();
+            one.GetNum = 1;
             myAdd(one);
         }
         private void two_Click(object sender, RoutedEventArgs e)
         {
+            Num two = new Num();
+            two.GetNum = 2;
             myAdd(two);
         }
         private void three_Click(object sender, RoutedEventArgs e)
         {
+            Num three = new Num();
+            three.GetNum = 3;
             myAdd(three);
         }
         private void four_Click(object sender, RoutedEventArgs e)
         {
+            Num four = new Num();
+            four.GetNum = 4;
             myAdd(four);
         }
         private void five_Click(object sender, RoutedEventArgs e)
         {
+            Num five = new Num();
+            five.GetNum = 5;
             myAdd(five);
         }
         private void six_Click(object sender, RoutedEventArgs e)
         {
+            Num six = new Num();
+            six.GetNum = 6;
             myAdd(six);
         }
         private void seven_Click(object sender, RoutedEventArgs e)
         {
+            Num seven = new Num();
+            seven.GetNum = 7;
             myAdd(seven);
         }
         private void eight_Click(object sender, RoutedEventArgs e)
         {
+            Num eight = new Num();
+            eight.GetNum = 8;
             myAdd(eight);
         }
         private void nine_Click(object sender, RoutedEventArgs e)
         {
+            Num nine = new Num();
+            nine.GetNum = 9;
             myAdd(nine);
         }
         private void zero_Click(object sender, RoutedEventArgs e)
         {
+            Num zero = new Num();
+            zero.GetNum = 0;
             myAdd(zero);
         }
         #endregion
@@ -258,5 +278,23 @@ namespace Calculator
                 expression.Text = expression.Text.Remove(expression.Text.Count() - 1);
             }
         }
+    }
+    public class Num
+    {
+        private int getNum;
+
+        public int GetNum
+        {
+            get
+            {
+                return getNum;
+            }
+
+            set
+            {
+                getNum = value;
+            }
+        }
+
     }
 }
