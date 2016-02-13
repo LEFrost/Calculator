@@ -25,7 +25,7 @@ namespace Calculator
         public BlankPage1()
         {
             this.InitializeComponent();
-            DataContext = new Record();
+
             myListview.ItemsSource = Class1.moc;
         }
 

@@ -19,11 +19,18 @@ namespace Calculator
         {
             this.InitializeComponent();
             mark.Push('#');
-            DataContext = new Record();
         }
-
+        /// <summary>
+        /// 判断是否有小数点
+        /// </summary>
         bool ifDot = false;
-        List<object> temp = new List<object>();
+        /// <summary>
+        /// 临时存储算式
+        /// </summary>
+        List<object> temp = new List<object>();//
+        /// <summary>
+        /// 存储器
+        /// </summary>
         List<object> storage = new List<object>();
         Stack mark = new Stack();
         Stack num = new Stack();
@@ -198,7 +205,7 @@ namespace Calculator
 
         private void count_Click(object sender, RoutedEventArgs e)
         {
-            if (expression.Text=="0"&&Input.Text=="")
+            if (expression.Text == "0" && Input.Text == "")
             {
             }
             else
