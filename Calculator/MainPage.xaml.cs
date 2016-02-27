@@ -27,7 +27,7 @@ namespace Calculator
         /// <summary>
         /// 临时存储算式
         /// </summary>
-        List<object> temp = new List<object>();//
+        List<object> temp = new List<object>();
         /// <summary>
         /// 存储器
         /// </summary>
